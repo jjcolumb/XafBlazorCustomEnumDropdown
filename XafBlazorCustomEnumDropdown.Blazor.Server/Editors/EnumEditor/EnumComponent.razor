@@ -1,0 +1,30 @@
+﻿@using XafBlazorCustomEnumDropdown.Module.BusinessObjects
+@using System.Linq;
+
+<DxComboBox Data="@DaysOftheWeek" TData="string" TValue="string" ValueChanged="@((string e)=>OnDaySelected(e))" Value="@currentValue" />
+
+
+
+@code {
+    [Parameter]
+    public ShifDaysOfTheWeek Value { get; set; }
+    [Parameter]
+    public EventCallback<ShifDaysOfTheWeek> ValueChanged { get; set; }
+
+    private List<string> DaysOftheWeek;
+    private string currentValue;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();        
+        DaysOftheWeek = Enum.GetNames(typeof(ShifDaysOfTheWeek)).ToList().Where(x=>x.StartsWith("S")).ToList();
+        currentValue = Value.ToString();
+    }
+
+    void OnDaySelected(string e)
+    {
+        currentValue = e;
+        ShifDaysOfTheWeek dayEnum = (ShifDaysOfTheWeek)Enum.Parse(typeof(ShifDaysOfTheWeek), e);
+        ValueChanged.InvokeAsync(dayEnum);
+    }
+}
